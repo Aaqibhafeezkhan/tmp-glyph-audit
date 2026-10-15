@@ -71,6 +71,10 @@ Unity -batchmode -nographics -projectPath . \
   -glyphAuditReport Logs/tmp-glyph-audit.txt
 ```
 
+Use a `.json` path (for example `-glyphAuditReport Logs/tmp-glyph-audit.json`) to write
+structured JSON with scan counts, per-font missing code points, and source/location findings.
+The Unity log remains human-readable text regardless of the report file format.
+
 ## Why not …
 
 - **TMP's own warning** ("The character with Unicode value … was not found in the [font]
