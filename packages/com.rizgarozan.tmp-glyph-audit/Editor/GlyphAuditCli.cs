@@ -22,6 +22,8 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path)));
                 File.WriteAllText(path, report.ToText());
                 Debug.Log(report.ToText());
+                if (Array.IndexOf(Environment.GetCommandLineArgs(), "-glyphAuditAnnotations") >= 0)
+                    Console.Write(report.ToGitHubAnnotations());
                 exitCode = report.Clean ? 0 : 1;
             }
             catch (Exception e)

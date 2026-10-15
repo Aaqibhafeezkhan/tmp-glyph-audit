@@ -71,6 +71,8 @@ Unity -batchmode -nographics -projectPath . \
   -glyphAuditReport Logs/tmp-glyph-audit.txt
 ```
 
+Add `-glyphAuditAnnotations` to emit GitHub Actions `::error` annotations for each missing-glyph finding, visible on the workflow run and pull request.
+
 ## Why not …
 
 - **TMP's own warning** ("The character with Unicode value … was not found in the [font]
