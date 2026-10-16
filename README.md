@@ -75,6 +75,8 @@ Use a `.json` path (for example `-glyphAuditReport Logs/tmp-glyph-audit.json`) t
 structured JSON with scan counts, per-font missing code points, and source/location findings.
 The Unity log remains human-readable text regardless of the report file format.
 
+Add `-glyphAuditAnnotations` to emit GitHub Actions `::error` annotations for each missing-glyph finding, visible on the workflow run and pull request.
+
 ## Why not …
 
 - **TMP's own warning** ("The character with Unicode value … was not found in the [font]

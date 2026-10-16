@@ -119,6 +119,35 @@ namespace RizgarOzan.TmpGlyphAudit
             sb.Append('"');
         }
 
+        public string ToGitHubAnnotations()
+        {
+            var sb = new StringBuilder();
+            foreach (var finding in Findings.OrderBy(f => f.Source).ThenBy(f => f.Location).ThenBy(f => f.Font))
+            {
+                int line = 0;
+                bool hasLine = finding.Location != null
+                    && finding.Location.StartsWith("line ", StringComparison.Ordinal)
+                    && int.TryParse(finding.Location.Substring(5), out line)
+                    && line > 0;
+                sb.Append("::error file=").Append(EscapeAnnotationProperty(finding.Source));
+                if (hasLine) sb.Append(",line=").Append(line);
+                sb.Append(",title=Missing glyphs::");
+                string message = finding.Font + " cannot draw: "
+                    + string.Join(" ", finding.Missing.Select(cp => char.ConvertFromUtf32((int)cp)));
+                if (!hasLine && !string.IsNullOrEmpty(finding.Location))
+                    message += " (at " + finding.Location + ")";
+                sb.Append(EscapeAnnotationMessage(message));
+                sb.Append('\n');
+            }
+            return sb.ToString();
+        }
+
+        static string EscapeAnnotationProperty(string value) =>
+            EscapeAnnotationMessage(value).Replace(":", "%3A").Replace(",", "%2C");
+
+        static string EscapeAnnotationMessage(string value) =>
+            (value ?? "").Replace("%", "%25").Replace("\r", "%0D").Replace("\n", "%0A");
+
         public string ToText()
         {
             var sb = new StringBuilder();

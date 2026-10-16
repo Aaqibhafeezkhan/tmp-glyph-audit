@@ -157,6 +157,53 @@ public class GlyphResolverTests
     }
 
     [Fact]
+    public void GitHub_annotations_include_lines_for_runtime_text_and_escape_source_paths()
+    {
+        var report = new AuditReport();
+        report.Findings.Add(new Finding
+        {
+            Source = "Assets/Localization,ja.txt",
+            Location = "line 12",
+            Font = "Main",
+            Missing = new SortedSet<uint> { 'う', 'こ' }
+        });
+        report.Findings.Add(new Finding
+        {
+            Source = "Assets/Menu.prefab",
+            Location = "Canvas/Title",
+            Font = "Main",
+            Missing = new SortedSet<uint> { 'ğ' }
+        });
+
+        string[] annotations = report.ToGitHubAnnotations().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        Assert.Equal(2, annotations.Length);
+        Assert.Contains("::error file=Assets/Localization%2Cja.txt,line=12,title=Missing glyphs::", annotations[0]);
+        Assert.Contains("Main cannot draw: う こ", annotations[0]);
+        Assert.DoesNotContain(",line=", annotations[1]);
+        Assert.Contains("file=Assets/Menu.prefab,title=Missing glyphs::", annotations[1]);
+        Assert.Contains("Main cannot draw: ğ (at Canvas/Title)", annotations[1]);
+    }
+
+    [Fact]
+    public void GitHub_annotation_message_escapes_percent_and_line_breaks()
+    {
+        var report = new AuditReport();
+        report.Findings.Add(new Finding
+        {
+            Source = "Assets/100%,menu.txt",
+            Location = "line 1",
+            Font = "Main%\nSDF",
+            Missing = new SortedSet<uint> { '%' }
+        });
+
+        string annotation = report.ToGitHubAnnotations();
+
+        Assert.Contains("file=Assets/100%25%2Cmenu.txt,line=1", annotation);
+        Assert.Contains("Main%25%0ASDF cannot draw: %25", annotation);
+    }
+
+    [Fact]
     public void Clean_report_says_so()
     {
         Assert.Equal("TMP Glyph Audit: 5 texts scanned, no missing glyphs.", new AuditReport { TextsScanned = 5 }.ToText());
