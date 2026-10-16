@@ -20,7 +20,10 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
                 var report = GlyphAudit.Run(GlyphAuditSettings.Load());
                 string path = Argument("-glyphAuditReport") ?? "Logs/tmp-glyph-audit.txt";
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path)));
-                File.WriteAllText(path, report.ToText());
+                string output = string.Equals(Path.GetExtension(path), ".json", StringComparison.OrdinalIgnoreCase)
+                    ? report.ToJson()
+                    : report.ToText();
+                File.WriteAllText(path, output);
                 Debug.Log(report.ToText());
                 if (Array.IndexOf(Environment.GetCommandLineArgs(), "-glyphAuditAnnotations") >= 0)
                     Console.Write(report.ToGitHubAnnotations());

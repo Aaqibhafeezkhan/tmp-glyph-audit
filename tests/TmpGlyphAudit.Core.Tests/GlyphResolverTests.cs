@@ -1,3 +1,4 @@
+using System.Text.Json;
 using RizgarOzan.TmpGlyphAudit;
 
 public class GlyphResolverTests
@@ -128,6 +129,32 @@ public class GlyphResolverTests
         Assert.Contains("  Assets/Shop.prefab > Price: ğş", text);
     }
 
+
+    [Fact]
+    public void Json_report_escapes_paths_and_contains_font_findings()
+    {
+        var report = new AuditReport { TextsScanned = 2 };
+        report.Findings.Add(new Finding
+        {
+            Source = @"Assets/Localization/""ja""\ja.txt",
+            Location = "line 1",
+            Font = "Main \"SDF\"",
+            Missing = new SortedSet<uint> { 'う', 'こ' }
+        });
+
+        using var document = JsonDocument.Parse(report.ToJson());
+        var root = document.RootElement;
+        Assert.Equal(2, root.GetProperty("textsScanned").GetInt32());
+        Assert.False(root.GetProperty("clean").GetBoolean());
+        var font = Assert.Single(root.GetProperty("fonts").EnumerateArray());
+        Assert.Equal("Main \"SDF\"", font.GetProperty("font").GetString());
+        Assert.Equal(new[] { "U+3046", "U+3053" },
+            font.GetProperty("missing").EnumerateArray().Select(value => value.GetString()).ToArray());
+        var finding = Assert.Single(font.GetProperty("findings").EnumerateArray());
+        Assert.Equal(@"Assets/Localization/""ja""\ja.txt", finding.GetProperty("source").GetString());
+        Assert.Equal("line 1", finding.GetProperty("location").GetString());
+        Assert.Equal("うこ", finding.GetProperty("missing").GetString());
+    }
 
     [Fact]
     public void GitHub_annotations_include_lines_for_runtime_text_and_escape_source_paths()

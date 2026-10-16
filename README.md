@@ -71,6 +71,10 @@ Unity -batchmode -nographics -projectPath . \
   -glyphAuditReport Logs/tmp-glyph-audit.txt
 ```
 
+Use a `.json` path (for example `-glyphAuditReport Logs/tmp-glyph-audit.json`) to write
+structured JSON with scan counts, per-font missing code points, and source/location findings.
+The Unity log remains human-readable text regardless of the report file format.
+
 Add `-glyphAuditAnnotations` to emit GitHub Actions `::error` annotations for each missing-glyph finding, visible on the workflow run and pull request.
 
 ## Why not …
