@@ -50,6 +50,14 @@ public class TextScanTests
     }
 
     [Fact]
+    public void Smart_string_placeholders_are_not_scanned_as_glyphs()
+    {
+        Assert.Equal("Hello !", Scan("Hello {player}!"));
+        Assert.Equal("Loading ", Scan("Loading {0}"));
+        Assert.Equal("A B", Scan("A {score:0.00} B"));
+    }
+
+    [Fact]
     public void Surrogate_pairs_are_one_code_point()
     {
         Assert.Equal(new uint[] { 0x1F600 }, TextScan.CodePoints("😀").ToArray());

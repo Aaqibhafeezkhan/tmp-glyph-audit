@@ -60,6 +60,17 @@ namespace RizgarOzan.TmpGlyphAudit
                     }
                 }
 
+                // Smart String placeholders are formatting inputs, not rendered text.
+                if (c == '{')
+                {
+                    int placeholderEnd = text.IndexOf('}', i + 1);
+                    if (placeholderEnd >= 0)
+                    {
+                        i = placeholderEnd;
+                        continue;
+                    }
+                }
+
                 if (richText && c == '<' && TryReadTag(text, i, out int end, out string name, out bool closing, out string value))
                 {
                     if (name == "noparse") { noParse = !closing; i = end; continue; }
