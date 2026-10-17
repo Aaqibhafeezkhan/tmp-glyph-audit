@@ -112,8 +112,11 @@ selecting the object inside a prefab or scene ([#6](https://github.com/RizgarOza
 
 Known limits:
 
-- **Unity Localization string tables** are not read yet — export them to text or help add
-  it ([#9](https://github.com/RizgarOzan/tmp-glyph-audit/issues/9)).
+- Unity Localization support is optional. When `com.unity.localization` is installed, add
+  locale-code/font pairs under **Unity Localization String Tables** in the audit window.
+  Every StringTable entry is checked against the font configured for its locale. Smart
+  String placeholders such as `{player}` and `{0}` are skipped; their runtime values are
+  not known to the audit.
 - `DynamicOS` font assets are checked against the fonts installed on the machine running the
   audit, which may differ from your players'.
 

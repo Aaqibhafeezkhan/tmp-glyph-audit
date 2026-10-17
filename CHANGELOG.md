@@ -6,6 +6,10 @@ All notable changes to `com.rizgarozan.tmp-glyph-audit`. The format follows
 
 ## [Unreleased]
 
+### Added
+- Optional Unity Localization String Table scanning with per-locale TMP font settings.
+- Smart String placeholder stripping for localization entries.
+
 ## [0.2.0] - 2026-09-15
 
 ### Added

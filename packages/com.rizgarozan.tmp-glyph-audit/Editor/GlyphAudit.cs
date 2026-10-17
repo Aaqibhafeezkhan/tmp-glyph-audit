@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -42,6 +43,12 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
                 if (settings.scanScenes) audit.ScanScenes(folders);
             }
             foreach (var source in settings.textSources) audit.ScanTextFiles(source);
+
+            // Localization is optional and its scanner lives in a separate assembly.
+            var scanner = Type.GetType(
+                "RizgarOzan.TmpGlyphAudit.Localization.LocalizationTableScanner, RizgarOzan.TmpGlyphAudit.Localization");
+            scanner?.GetMethod("Scan", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { audit, settings });
+
             return audit.Report;
         }
 

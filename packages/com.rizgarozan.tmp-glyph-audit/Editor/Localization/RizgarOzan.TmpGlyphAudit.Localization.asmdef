@@ -1,0 +1,29 @@
+{
+  "name": "RizgarOzan.TmpGlyphAudit.Localization",
+  "rootNamespace": "RizgarOzan.TmpGlyphAudit.Localization",
+  "references": [
+    "RizgarOzan.TmpGlyphAudit.Editor",
+    "RizgarOzan.TmpGlyphAudit.Core",
+    "Unity.Localization",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "UNITY_LOCALIZATION"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.unity.localization",
+      "expression": "1.0.0",
+      "define": "UNITY_LOCALIZATION"
+    }
+  ],
+  "noEngineReferences": false
+}

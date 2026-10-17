@@ -96,6 +96,30 @@ namespace RizgarOzan.TmpGlyphAudit
             return true;
         }
 
+        /// <summary>
+        /// Removes Unity Localization Smart String placeholders such as {0} and {player}.
+        /// This is opt-in because ordinary text may display braces literally.
+        /// </summary>
+        public static string StripSmartStringPlaceholders(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return text;
+            var result = new System.Text.StringBuilder(text.Length);
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] == '{')
+                {
+                    int close = text.IndexOf('}', i + 1);
+                    if (close > i + 1)
+                    {
+                        i = close;
+                        continue;
+                    }
+                }
+                result.Append(text[i]);
+            }
+            return result.ToString();
+        }
+
         /// <summary>Distinct code points, sorted.</summary>
         public static SortedSet<uint> Distinct(string text, bool richText = true, bool parseEscapes = true)
             => new SortedSet<uint>(CodePoints(text, richText, parseEscapes));

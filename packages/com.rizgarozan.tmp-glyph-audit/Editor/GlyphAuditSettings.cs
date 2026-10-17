@@ -25,6 +25,16 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
         /// </summary>
         public List<TextSource> textSources = new List<TextSource>();
 
+        /// <summary>Unity Localization String Tables checked with a font chosen for each locale code.</summary>
+        public List<LocalizationFont> localizationFonts = new List<LocalizationFont>();
+
+        [Serializable]
+        public sealed class LocalizationFont
+        {
+            public string localeCode = "en";
+            public string fontAsset = "";
+        }
+
         [Serializable]
         public sealed class TextSource
         {

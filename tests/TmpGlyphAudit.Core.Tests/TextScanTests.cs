@@ -49,6 +49,16 @@ public class TextScanTests
         Assert.Equal(@"\u011F", Scan(@"\u011F", parseEscapes: false));
     }
 
+    [Theory]
+    [InlineData("Hello {player}", "Hello ")]
+    [InlineData("You have {0} coins", "You have  coins")]
+    [InlineData("literal { brace", "literal { brace")]
+    [InlineData("", "")]
+    public void Smart_string_placeholders_can_be_removed_without_changing_other_text(string input, string expected)
+    {
+        Assert.Equal(expected, TextScan.StripSmartStringPlaceholders(input));
+    }
+
     [Fact]
     public void Surrogate_pairs_are_one_code_point()
     {

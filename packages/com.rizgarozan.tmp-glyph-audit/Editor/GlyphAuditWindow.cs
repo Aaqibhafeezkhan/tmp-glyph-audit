@@ -15,7 +15,12 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
         [MenuItem("Window/Text/TMP Glyph Audit")]
         static void Open() => GetWindow<GlyphAuditWindow>("TMP Glyph Audit");
 
-        void OnEnable() => _settings = GlyphAuditSettings.Load();
+        void OnEnable()
+        {
+            _settings = GlyphAuditSettings.Load();
+            if (_settings.localizationFonts == null)
+                _settings.localizationFonts = new System.Collections.Generic.List<GlyphAuditSettings.LocalizationFont>();
+        }
 
         void OnGUI()
         {
@@ -92,6 +97,28 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
             }
             if (GUILayout.Button("Add text source", GUILayout.Width(120)))
                 _settings.textSources.Add(new GlyphAuditSettings.TextSource());
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField(new GUIContent("Unity Localization String Tables",
+                "Optional: add locale codes and the TMP font used to display that locale's String Tables."));
+            for (int i = 0; i < _settings.localizationFonts.Count; i++)
+            {
+                var entry = _settings.localizationFonts[i];
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    entry.localeCode = EditorGUILayout.TextField(entry.localeCode, GUILayout.Width(70));
+                    var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(entry.fontAsset);
+                    font = (TMPro.TMP_FontAsset)EditorGUILayout.ObjectField(font, typeof(TMPro.TMP_FontAsset), false);
+                    entry.fontAsset = font != null ? AssetDatabase.GetAssetPath(font) : "";
+                    if (GUILayout.Button("-", GUILayout.Width(22)))
+                    {
+                        _settings.localizationFonts.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+            if (GUILayout.Button("Add locale font", GUILayout.Width(120)))
+                _settings.localizationFonts.Add(new GlyphAuditSettings.LocalizationFont());
             if (EditorGUI.EndChangeCheck()) _settings.Save();
         }
 
