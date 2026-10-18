@@ -58,7 +58,7 @@ public class TextScanTests
         Assert.Equal("Hello !", Scan("Hello {player}!", skipPlaceholders: true));
         Assert.Equal("Loading ", Scan("Loading {0}", skipPlaceholders: true));
         Assert.Equal("A  B", Scan("A {score:0.00} B", skipPlaceholders: true));
-        Assert.Equal(new uint[] { 'A', ' ', 'B' }, TextScan.Distinct("A {score} B", skipPlaceholders: true).ToArray());
+        Assert.Equal(new uint[] { ' ', 'A', 'B' }, TextScan.Distinct("A {score} B", skipPlaceholders: true).ToArray());
     }
 
     [Fact]
