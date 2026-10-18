@@ -48,11 +48,11 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
         }
 
         /// <summary>Checks one text as the given font would draw it.</summary>
-        public void Check(string text, TMP_FontAsset font, bool richText, bool parseEscapes, string source, string location)
+        public void Check(string text, TMP_FontAsset font, bool richText, bool parseEscapes, string source, string location, bool skipPlaceholders = false)
         {
             Report.TextsScanned++;
             font = font != null ? font : _defaultFont;
-            foreach (var (f, missing) in _resolver.MissingByFont(TmpFontSource.For(font, _fonts), text, richText, parseEscapes, FontByName))
+            foreach (var (f, missing) in _resolver.MissingByFont(TmpFontSource.For(font, _fonts), text, richText, parseEscapes, FontByName, skipPlaceholders))
                 Report.Findings.Add(new Finding
                 {
                     Source = source,
@@ -171,7 +171,7 @@ namespace RizgarOzan.TmpGlyphAudit.Editor
                     string value = entryType.GetProperty("Value")?.GetValue(entry, null) as string;
                     if (string.IsNullOrEmpty(value)) continue;
                     string key = entryType.GetProperty("Key")?.GetValue(entry, null)?.ToString() ?? "(unknown key)";
-                    Check(value, font, true, true, path, key);
+                    Check(value, font, true, true, path, key, skipPlaceholders: true);
                 }
             }
         }
