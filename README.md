@@ -67,8 +67,9 @@ share them.
 If your project uses Unity Localization, add a locale/font pair under **Unity Localization
 string tables**. The audit scans every `StringTable` asset and reports its asset path and
 entry key. The Localization package is optional: without it, the package still compiles and
-all other scan sources continue to work. Smart String placeholders such as `{0}` and
-`{player}` are skipped because they are formatting inputs, not text drawn by the font.
+all other scan sources continue to work. In Localization string tables, Smart String
+placeholders such as `{0}` and `{player}` are skipped because they are formatting inputs,
+not text drawn by the font.
 
 **CI:** run the same scan in batch mode. Exit code `0` = every character can be drawn,
 `1` = glyphs are missing, `2` = the scan itself failed.
@@ -105,8 +106,8 @@ Add `-glyphAuditAnnotations` to emit GitHub Actions `::error` annotations for ea
 The scanner reads text the way TMP's parser does: rich-text tags (`<b>`, `<color=#F00>`,
 `<sprite=3>`, …) are not drawn, `<noparse>` content is drawn literally, `\u011F`-style
 escapes draw the character they name, surrogate pairs are one character, and control,
-zero-width and bidi characters are skipped. Smart String placeholder spans such as
-`{player}` and `{0}` are skipped. Unknown tags such as `<madeup>` are drawn
+zero-width and bidi characters are skipped. When scanning Unity Localization string tables,
+Smart String placeholder spans such as `{player}` and `{0}` are skipped. Unknown tags such as `<madeup>` are drawn
 literally — TMP does the same.
 
 `<font="Name">` switches font mid-text, so the text up to `</font>` is checked against
