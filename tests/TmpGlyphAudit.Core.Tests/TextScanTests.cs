@@ -2,8 +2,8 @@ using RizgarOzan.TmpGlyphAudit;
 
 public class TextScanTests
 {
-    static string Scan(string text, bool richText = true, bool parseEscapes = true) =>
-        string.Concat(TextScan.CodePoints(text, richText, parseEscapes).Select(cp => char.ConvertFromUtf32((int)cp)));
+    static string Scan(string text, bool richText = true, bool parseEscapes = true, bool skipPlaceholders = false) =>
+        string.Concat(TextScan.CodePoints(text, richText, parseEscapes, skipPlaceholders).Select(cp => char.ConvertFromUtf32((int)cp)));
 
     [Fact]
     public void Plain_text_is_every_character()
@@ -50,11 +50,15 @@ public class TextScanTests
     }
 
     [Fact]
-    public void Smart_string_placeholders_are_not_scanned_as_glyphs()
+    public void Smart_string_placeholders_are_skipped_only_when_requested()
     {
-        Assert.Equal("Hello !", Scan("Hello {player}!"));
-        Assert.Equal("Loading ", Scan("Loading {0}"));
-        Assert.Equal("A B", Scan("A {score:0.00} B"));
+        Assert.Equal("Hello {player}!", Scan("Hello {player}!"));
+        Assert.Equal("Loading {0}", Scan("Loading {0}"));
+        Assert.Equal("A {score:0.00} B", Scan("A {score:0.00} B"));
+        Assert.Equal("Hello !", Scan("Hello {player}!", skipPlaceholders: true));
+        Assert.Equal("Loading ", Scan("Loading {0}", skipPlaceholders: true));
+        Assert.Equal("A  B", Scan("A {score:0.00} B", skipPlaceholders: true));
+        Assert.Equal(new uint[] { 'A', ' ', 'B' }, TextScan.Distinct("A {score} B", skipPlaceholders: true).ToArray());
     }
 
     [Fact]
